@@ -1,9 +1,24 @@
 import { useState } from "react";
 export default function Board() {
+
+  const [count, setCount] = useState(0);
   const [xIsNext, setXIsNext] = useState(true);
   const [squares, setSquares] = useState(Array(9).fill(null));
 
+  const winner = calculateWinner(squares);
+  
+  let status;
+  if(winner) {
+    status = "Winner: " + winner;
+  }  else if (!winner & count === 9) {
+      status = "No winner";
+  }
+  else {
+      status = "Next player: " + (xIsNext ? "X" : "O") + " " + count;
+  }
+
   function handleClick(i) {
+    setCount(count+1); // Updates the count everytime it is clicked
     if(squares[i] || calculateWinner(squares)) {
       return;  // Checks if the square is already filled. It returns what it already has so it doesn't update. Or if there's a winner already.
     }
@@ -14,13 +29,14 @@ export default function Board() {
     else {
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares); // Calling the setSquares function lets React know the state of the component has changed.
+    setSquares(nextSquares); // Calling the setSquares function lets React know the state of the component has changed. 
     setXIsNext(!xIsNext); 
   }
 
   return (
     // you can use fragments (<> and </>) to wrap multiple adjacent JSX elements like this
     <>
+    <div className="status">{status}</div>
       <div className="board-row">
         <Square value={squares[0]} onSquareClick={ () => handleClick(0)}/>
         <Square value={squares[1]} onSquareClick={ () => handleClick(1)}/>
